@@ -15,7 +15,7 @@ export default function ImageModal({ image, onClose }: Props) {
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [onClose]);
 
   return (
     <div className="modal-overlay">
