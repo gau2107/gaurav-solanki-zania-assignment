@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     let tempList = JSON.parse(localStorage.getItem("imageList") || "null");
-    if (tempList.length) {
+    if (tempList && tempList.length) {
       setList(sortByPosition([...tempList]));
     } else {
       getData();

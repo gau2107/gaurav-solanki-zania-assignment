@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import LazyImage from "./LazyImage";
 
 interface Props {
   image: string;
@@ -22,7 +23,7 @@ export default function ImageModal({ image, onClose }: Props) {
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
-        <img src={image} alt="Overlay" className="modal-image" />
+        <LazyImage image={image} alt="Overlay" className="modal-image" />
       </div>
     </div>
   );
