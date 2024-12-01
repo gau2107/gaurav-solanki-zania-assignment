@@ -18,7 +18,12 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    getData();
+    let tempList = JSON.parse(localStorage.getItem("imageList") || "null");
+    if (tempList.length) {
+      setList(sortByPosition([...tempList]));
+    } else {
+      getData();
+    }
   }, []);
 
   const handleDragStart = (card: listItem) => {
@@ -49,7 +54,9 @@ function App() {
   const getData = async () => {
     const response = await fetch("https://example.com/data");
     const data = await response.json();
-    setList(sortByPosition([...data]));
+    const tempList = sortByPosition([...data]);
+    localStorage.setItem("imageList", JSON.stringify(tempList));
+    setList(tempList);
   };
 
   return (
@@ -58,6 +65,7 @@ function App() {
         {list.map((data) => {
           return (
             <div
+              key={data.position}
               draggable={true}
               onDragStart={() => handleDragStart(data)}
               onDragOver={(ev: React.DragEvent<HTMLDivElement>) =>
