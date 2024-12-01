@@ -49,6 +49,8 @@ function App() {
       }
       setList(sortByPosition([...tempList]));
       setSelectedItemPositionId(0);
+      localStorage.setItem("imageList", JSON.stringify(tempList));
+
     }
   };
 
