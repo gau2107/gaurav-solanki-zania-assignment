@@ -4,7 +4,7 @@ import CardItem from "./components/CardItem";
 import { sortByPosition } from "./utils";
 import ImageModal from "./components/ImageModal";
 
-interface listItem {
+export interface listItem {
   type: string;
   title: string;
   position: number;

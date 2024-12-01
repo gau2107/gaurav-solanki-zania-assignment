@@ -1,7 +1,7 @@
 interface Props {
   heading: string;
   image: string;
-  onImageSelect: any;
+  onImageSelect: () => void;
 }
 export default function CardItem({heading, image, onImageSelect}: Props) {
   return (

@@ -1,1 +1,3 @@
-export const sortByPosition = (data: any) => data.sort((a: any, b: any) => a.position - b.position);
+import { listItem } from "./App";
+
+export const sortByPosition = (data: listItem[]) => data.sort((a: listItem, b: listItem) => a.position - b.position);

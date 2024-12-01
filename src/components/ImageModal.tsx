@@ -1,9 +1,21 @@
+import { useEffect } from "react";
+
 interface Props {
   image: string;
-  onClose: any;
+  onClose: () => void;
 }
 
 export default function ImageModal({ image, onClose }: Props) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="modal-overlay">
       <div className="modal">
