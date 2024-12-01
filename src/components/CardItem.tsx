@@ -1,10 +1,12 @@
 interface Props {
-  heading: string
+  heading: string;
+  image: string;
+  onImageSelect: any;
 }
-export default function CardItem({heading}: Props) {
+export default function CardItem({heading, image, onImageSelect}: Props) {
   return (
     <div className="card">
-      <img src="https://via.placeholder.com/300x200" alt={heading} />
+      <img src={image} alt={heading} onClick={() => onImageSelect()}/>
       <div className="card-content">
         <h2 className="card-title">{heading}</h2>
       </div>

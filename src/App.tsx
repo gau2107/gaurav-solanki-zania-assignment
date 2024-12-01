@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import CardItem from "./components/CardItem";
 import { sortByPosition } from "./utils";
+import ImageModal from "./components/ImageModal";
 
 interface listItem {
   type: string;
   title: string;
   position: number;
+  image: string;
 }
 function App() {
   const [list, setList] = useState<listItem[]>([]);
   const [selectedItemPositionId, setSelectedItemPositionId] =
     useState<number>(0);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     getData();
@@ -37,6 +41,11 @@ function App() {
     }
   };
 
+  const handleSelectToggleImage = (image: string) => {
+    setIsModalOpen(!isModalOpen);
+    setSelectedImage(image);
+  };
+
   const getData = async () => {
     const response = await fetch("https://example.com/data");
     const data = await response.json();
@@ -56,11 +65,21 @@ function App() {
               }
               onDrop={() => handleDrop(data)}
             >
-              <CardItem heading={data.title} />
+              <CardItem
+                heading={data.title}
+                image={data.image}
+                onImageSelect={() => handleSelectToggleImage(data.image)}
+              />
             </div>
           );
         })}
       </div>
+      {isModalOpen && (
+        <ImageModal
+          image={selectedImage}
+          onClose={() => handleSelectToggleImage("")}
+        />
+      )}
     </div>
   );
 }
