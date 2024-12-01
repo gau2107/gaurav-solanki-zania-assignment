@@ -32,8 +32,7 @@ body {
 
 .card-img {
   width: 100%;
-  height: auto;
-  max-height: 200px;
+  height: 200px;
 }
 
 .card-content {

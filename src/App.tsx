@@ -33,14 +33,20 @@ function App() {
   const handleDrop = (card: listItem) => {
     if (selectedItemPositionId !== card.position) {
       let tempList = [...list];
+
       const dragIndex = tempList.findIndex(
         (obj) => obj.position === selectedItemPositionId
       );
       const dropIndex = tempList.findIndex(
         (obj) => obj.position === card.position
       );
-      tempList[dragIndex].position = card.position;
-      tempList[dropIndex].position = selectedItemPositionId;
+
+      let element = tempList.splice(dragIndex, 1)[0];
+      tempList.splice(dropIndex, 0, element);
+
+      for (let i = 0; i < tempList.length; i++) {
+        tempList[i].position = i;
+      }
       setList(sortByPosition([...tempList]));
       setSelectedItemPositionId(0);
     }
