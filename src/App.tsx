@@ -1,101 +1,92 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import CardItem from "./components/CardItem";
-import { sortByPosition } from "./utils";
-import ImageModal from "./components/ImageModal";
+import TaskList from "./components/TaskList";
+import AddTask from "./components/AddTask";
+import SearchBar from "./components/SearchBar";
 
-export interface listItem {
-  type: string;
+export interface DataList {
+  id: number;
+  category: string;
   title: string;
-  position: number;
-  image: string;
+  status: string;
+  description: string;
 }
-function App() {
-  const [list, setList] = useState<listItem[]>([]);
-  const [selectedItemPositionId, setSelectedItemPositionId] =
-    useState<number>(0);
-  const [selectedImage, setSelectedImage] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
+function App() {
+  const [search, setSearch] = useState<string>("");
+  const [list, setList] = useState<DataList[]>([
+    {
+      id: 1,
+      category: "Shopping",
+      title: "Shopping",
+      status: "pending",
+      description: "Get essentials from Trader Joe's",
+    },
+    {
+      id: 2,
+      category: "Shopping",
+      title: "Shopping 2",
+      status: "pending",
+      description: "Get essentials from Trader Joe's",
+    },
+  ]);
   useEffect(() => {
-    let tempList = JSON.parse(localStorage.getItem("imageList") || "null");
-    if (tempList && tempList.length) {
-      setList(sortByPosition([...tempList]));
-    } else {
-      getData();
-    }
+    getData();
   }, []);
 
-  const handleDragStart = (card: listItem) => {
-    setSelectedItemPositionId(card.position);
+  const getData = () => {
+    const response = fetch("https://example.com/data");
+    // const list = response.json();
+    setList([...list]);
   };
 
-  const handleDrop = (card: listItem) => {
-    if (selectedItemPositionId !== card.position) {
-      let tempList = [...list];
-
-      const dragIndex = tempList.findIndex(
-        (obj) => obj.position === selectedItemPositionId
-      );
-      const dropIndex = tempList.findIndex(
-        (obj) => obj.position === card.position
-      );
-
-      let element = tempList.splice(dragIndex, 1)[0];
-      tempList.splice(dropIndex, 0, element);
-
-      for (let i = 0; i < tempList.length; i++) {
-        tempList[i].position = i;
-      }
-      setList(sortByPosition([...tempList]));
-      setSelectedItemPositionId(0);
-      localStorage.setItem("imageList", JSON.stringify(tempList));
-
-    }
+  const deleteCallback = (id: number) => {
+    let tempList = [...list];
+    const index = tempList.findIndex((obj) => obj.id === id);
+    tempList.splice(index, 1);
+    setList([...tempList]);
   };
 
-  const handleSelectToggleImage = (image: string) => {
-    setIsModalOpen(!isModalOpen);
-    setSelectedImage(image);
+  const doneCallback = (id: number) => {
+    let tempList = [...list];
+    const index = tempList.findIndex((obj) => obj.id === id);
+    tempList[index].status = "done";
+    setList([...tempList]);
   };
 
-  const getData = async () => {
-    const response = await fetch("https://example.com/data");
-    const data = await response.json();
-    const tempList = sortByPosition([...data]);
-    localStorage.setItem("imageList", JSON.stringify(tempList));
-    setList(tempList);
+  const handleSaveCallback = (
+    title: string,
+    description: string,
+    category: string
+  ) => {
+    setList([
+      ...list,
+      { title, description, category, status: "pending", id: list.length + 1 },
+    ]);
   };
 
+  const setSearchCallback = (value: string) => {
+    setSearch(value);
+    let tempList = [...list];
+    tempList.filter((obj) => obj.title == "value" || obj.description == value);
+    setList([...tempList]);
+  };
   return (
     <div className="app">
-      <div className="grid-container">
-        {list.map((data) => {
-          return (
-            <div
-              key={data.position}
-              draggable={true}
-              onDragStart={() => handleDragStart(data)}
-              onDragOver={(ev: React.DragEvent<HTMLDivElement>) =>
-                ev.preventDefault()
-              }
-              onDrop={() => handleDrop(data)}
-            >
-              <CardItem
-                heading={data.title}
-                image={data.image}
-                onImageSelect={() => handleSelectToggleImage(data.image)}
-              />
-            </div>
-          );
-        })}
-      </div>
-      {isModalOpen && (
-        <ImageModal
-          image={selectedImage}
-          onClose={() => handleSelectToggleImage("")}
-        />
-      )}
+      {/* <SearchBar /> */}
+      {list.map((data: DataList) => {
+        return (
+          <div key={data.id}>
+            <TaskList
+              data={data}
+              deleteCallback={deleteCallback}
+              doneCallback={doneCallback}
+            />
+          </div>
+        );
+      })}
+
+      <AddTask handleSaveCallback={handleSaveCallback} />
     </div>
   );
 }
